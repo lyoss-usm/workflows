@@ -1,0 +1,62 @@
+name: Reusable Pages Deploy
+
+on:
+  workflow_call:
+    # PARAMETROS DE ENTRADA:
+    # - environment_name: Nombre del entorno en GitHub con el que se desplegara la pagina
+    # - run_audit: Booleano para decidir si se ejecuta una auditoria Lighthouse tras el deploy
+    inputs:
+      environment_name:
+        description: 'Nombre del entorno en GitHub (ej. github-pages, production)'
+        required: false
+        default: 'github-pages'
+        type: string
+      run_audit:
+        description: 'Ejecutar auditoria Lighthouse (SEO, Performance) tras el deploy'
+        required: false
+        default: false
+        type: boolean
+
+# Evita que se solapen despliegues en el mismo entorno
+concurrency:
+  group: "pages-deploy-${{ inputs.environment_name }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write      # Requerido para publicar
+  id-token: write   # Requerido para autenticacion OIDC
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Expone la URL para que el job de auditoria la pueda leer
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # Nota: Esta acción busca automáticamente el artifact llamado "github-pages"
+        # Se debe haber subido en un job anterior
+
+  audit:
+    name: Lighthouse Audit
+    needs: deploy
+    # Solo corre si el input es true y el deploy fue exitoso
+    if: inputs.run_audit == true && success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Audit URL with Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ needs.deploy.outputs.page_url }}
+          uploadArtifacts: true        # Sube el reporte HTML a GitHub Actions
+          temporaryPublicStorage: true # Sube el reporte a un link público temporal

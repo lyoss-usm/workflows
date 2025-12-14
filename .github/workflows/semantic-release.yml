@@ -1,0 +1,64 @@
+name: Semantic Releasing
+
+on:
+  workflow_call:
+    # PARAMETROS DE ENTRADA:
+    # - GH_PAT: Personal Access Token con los siguientes permisos:
+    #     - repo: full control of private repositories
+    #     - workflow: update GitHub Action workflows
+    #
+    secrets:
+      GH_PAT:
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+        # Esto trae el codigo del repositorio
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Trae todo el historial de commits para poder calcular la version correctamente
+
+        # Esto calcula la version semantica basada en los commits,
+        # utilizando cualquier prefio con ! o BREAKING CHANGE para major,
+        # feat: para minor, y lo demas para patch
+      - name: Calculate version
+        id: version
+        uses: PaulHatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "/!:|BREAKING CHANGE:/"
+          minor_pattern: "/feat:/"
+          version_format: "${major}.${minor}.${patch}"
+          user_format_type: "csv"
+          bump_each_commit: false
+
+        # Esto crea el release en GitHub si la version ha cambiado
+      - name: Create Release
+        if: steps.version.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+        # Esto actualiza la etiqueta "latest" al nuevo release si la version ha cambiado
+        # Es util para que otros scripts o acciones puedan referirse siempre a la ultima version
+      - name: Update Latest Tag
+        if: steps.version.outputs.changed == 'true'
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
