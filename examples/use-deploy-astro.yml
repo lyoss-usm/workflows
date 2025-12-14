@@ -1,0 +1,63 @@
+# USO DE DEPLOY ASTRO
+# Este workflow compila y despliega un sitio Astro a GitHub Pages automaticamente.
+#
+# Copia este contenido a: .github/workflows/deploy.yml en tu repositorio de Astro.
+
+name: Astro Deploy to GitHub Pages
+
+# TRIGGERS
+# Aqui puedes configurar cuando se realiza el deploy,
+# se recomienda usar "latest" si se esta usando semantic-release
+on:
+  push:
+    tags:
+      - "latest"
+      # - "v*"
+    # branches:
+    #   - main
+  workflow_dispatch: # <- Boton manual en GitHub
+
+permissions:
+  contents: read
+  pages: write      # Necesario para desplegar
+  id-token: write   # Necesario para autenticación OIDC
+
+jobs:
+  # BUILD
+  # Compila el sitio Astro y sube el artifact para Pages
+  build:
+    name: Build Astro
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install and Build
+        uses: withastro/action@v3
+        with:
+            # CONFIGURACION DE BUILD
+            # Configura la ruta, version de node y package manager
+            path: .
+            node-version: 22
+            package-manager: pnpm@latest
+
+      # UPLOAD ARTIFACT
+      # Sube la carpeta 'dist' como artifact para GitHub Pages, asi lo puede usar el siguiente job.
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # DEPLOY
+  # Llama al workflow reutilizable para hacer el deploy y auditoria con Lighthouse
+  deploy:
+    name: Call Shared Deploy
+    needs: build
+    uses: lyoss-usm/workflows/.github/workflows/gh-pages-deploy.yml@main
+    with:
+      # CONFIGURACION DE DEPLOY
+      # Configura el entorno de deploy para usar el environment github-pages
+      # y activar la auditoria con Lighthouse al final del deploy
+      environment_name: 'github-pages'
+      run_audit: true
+    secrets: inherit # <- Esto usa los secretos del repo o de la organizacion. (GH_PAT es requerido)
