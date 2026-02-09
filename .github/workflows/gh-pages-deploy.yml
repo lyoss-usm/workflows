@@ -53,6 +53,9 @@ jobs:
     if: inputs.run_audit == true && success()
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository # trae el historial de git y el repo
+        uses: actions/checkout@v4
+    
       - name: Audit URL with Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
