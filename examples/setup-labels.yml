@@ -1,62 +1,10 @@
-# 🛠 SETUP: Inicialización de Etiquetas (Labels)
-# Ejecuta este workflow MANUALMENTE una sola vez en cada repositorio nuevo.
-# Creará las etiquetas necesarias para que el release.yml funcione correctamente.
-
-name: Setup Standard Labels
+name: Setup Repo Labels
 
 on:
   workflow_dispatch:
 
-permissions:
-  issues: write # Necesario para crear/editar etiquetas
-
 jobs:
-  create-labels:
-    name: Create/Update Labels
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Labels via GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Creando etiquetas estándar..."
-
-          # Función para crear o actualizar etiquetas
-          # Uso: create_label "NOMBRE" "COLOR_HEX" "DESCRIPCION"
-          create_label() {
-            gh label create "$1" --color "$2" --description "$3" --force
-            echo "✅ Etiqueta '$1' procesada."
-          }
-
-          # ----------------------------------------------------------------
-          # 1. EXCLUDE (Ignorar)
-          # ----------------------------------------------------------------
-          # Gris neutro. Mantenemos 'Ignorar' como en tu config (ojo con el typo)
-          create_label "Ignorar en CHANGELOG" "dbedff" "PRs que no aparecerán en las Release Notes"
-
-          # ----------------------------------------------------------------
-          # 2. NUEVAS FUNCIONALIDADES (Verdes/Azulados)
-          # ----------------------------------------------------------------
-          create_label "Funcionalidad" "0e8a16" "Nuevas características para el usuario"
-          create_label "Mejora" "a2eeef" "Mejoras a funcionalidades existentes"
-
-          # ----------------------------------------------------------------
-          # 3. BUGS Y FIXES (Rojos)
-          # ----------------------------------------------------------------
-          create_label "Fix" "d73a4a" "Corrección de errores pequeña"
-          create_label "Bug" "b60205" "Error confirmado que requiere arreglo"
-
-          # ----------------------------------------------------------------
-          # 4. MANTENIMIENTO (Amarillos/Morados/Naranjas)
-          # ----------------------------------------------------------------
-          create_label "Infraestructura" "5319e7" "Cambios en Terraform, Docker o Workflows"
-          create_label "Mantenimiento" "fbca04" "Actualización de dependencias o tareas generales"
-          create_label "Refactorizacion" "f9d0c4" "Cambios de código que no afectan funcionalidad"
-          create_label "Pruebas" "c5def5" "Tests unitarios, integración o e2e"
-
-          # ----------------------------------------------------------------
-          # 5. DOCUMENTACIÓN (Azul)
-          # ----------------------------------------------------------------
-          create_label "Documentacion" "0075ca" "Cambios solo en documentación"
-
-          echo "🎉 Todas las etiquetas han sido configuradas correctamente."
+  call-label-sync:
+    uses: lyoss-usm/workflows/.github/workflows/sync-labels.yml@main
+    permissions:
+      issues: write

@@ -1,6 +1,6 @@
 # CONFIGURACION DE RELEASE NOTES (CHANGELOG)
 # Este archivo configura como se generan las notas de la version segun las etiquetas de los Pull Requests.
-# Si se trabajan con cambios feat/.. -> dev -> main, es recomendable usar la etiqueta 'Ignorar en CHANGELOG'
+# Si se trabajan con cambios feat/.. -> dev -> main, es recomendable usar la etiqueta 'Release'
 # en los PRs de dev a main para evitar duplicados en el CHANGELOG.
 #
 # Este archivo esta configurado con las labels de ejemplo.
@@ -17,7 +17,7 @@ changelog:
   # Aqui se excluyen etiquetas o autores que no deben aparecer en el CHANGELOG.
   exclude:
     labels:
-      - 'Ignorar en CHANGELOG'
+      - 'Release'
     authors:
       - renovate
       - dependabot
@@ -28,17 +28,14 @@ changelog:
     - title: '🚀 Nuevas Funcionalidades'
       labels:
         - 'Funcionalidad'
-        - 'Mejora'
     - title: '🐛 Arreglos de Bugs'
       labels:
         - 'Fix'
         - 'Bug'
     - title: '🧰 Mantenimiento'
       labels:
-        - 'Infraestructura'
-        - 'Mantenimiento'
-        - 'Refactorizacion'
-        - 'Pruebas'
+        - 'Tarea Tecnica'
+        - 'Test'
     - title: '📚 Documentación'
       labels:
         - 'Documentacion'
