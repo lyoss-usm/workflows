@@ -1,34 +1,51 @@
 # Workflows Lyoss
 
-Este es el repositorio central de CI/CD estandar para proyectos de Lyoss. Aqui guardamos los flujos de trabajo reutilizables para no configurarlos una y otra vez en cada proyecto.
+Este es el repositorio central de CI/CD estándar para proyectos de Lyoss. Aquí centralizamos la lógica de automatización para mantener la consistencia en todos nuestros proyectos.
 
 ---
 
-## Catalogo de Workflows
+## Catálogo de Workflows Reutilizables
 
-| ¿Que necesitas? | Workflow | Descripcion |
+| ¿Qué necesitas? | Workflow Reusable | Descripción |
 |----------|-------------|-----|
-| **Publicar versiones** | `semantic-release.yml` | Genera Tags, Releases y Changelog automatico basado en commits. (principalmente PRs) |
-| **Desplegar en GH Pages** | `gh-pages-deploy.yml` | Sube el sitio estatico a GH Pages con Auditoria de SEO con Lighthouse |
-| **Configurar labels** | `examples/setup-labels.yml` | Crea las labels estandar para Issues y PRs |
+| **Publicar versiones** | `semantic-release.yml` | Genera Tags, Releases y Changelog automático basado en commits convencionales. |
+| **Desplegar en GH Pages** | `gh-pages-deploy.yml` | Despliegue estático con auditoría de SEO mediante Lighthouse integrada. |
+| **Sincronizar Labels** | `sync-labels.yml` | Sincroniza las etiquetas de Issues/PRs desde el estándar lyoss. |
+| **Protección de Ramas** | `sync-rulesets.yml` | Aplica Rulesets (Protect main/dev) con restricciones de merge y borrado. |
 
 ---
 
-## QuickStart
+## Guía de Inicio Rápido
 
-### Paso 1: Hacer el setup de labels
-1. Copia el workflow [examples/setup-labels.yml](./examples/setup-labels.yml) a `.github/workflows/setup-labels.yml` en tu proyecto.
-2. (opcional) Modifica las labels en el archivo si es necesario.
-3. Ejecutalo con el boton manual en la pestaña de Actions.
+### 1. Inicialización del Repositorio (Labels y Rulesets)
+Para que tu repo tenga las etiquetas de colores y las ramas `main` y `dev` protegidas automáticamente:
 
-### Paso 2: Configurar el Changelog
-1. Copia la configuracion [examples/release-config.yml](./examples/release-config.yml) a la raiz de tu proyecto.
-2. (opcional) Si modificaste las labels en el paso 1, actualiza las categorias en el archivo.
+1. Crea el archivo `.github/workflows/repo-setup.yml` en tu proyecto.
+2. Copia el contenido de [examples/bootstrap.yml](./examples/bootstrap.yml).
+3. Ejecútalo manualmente desde la pestaña **Actions**.
 
-### Paso 3: Conectar Workflows
+### 2. Configuración de Versiones (Semantic Release)
+Para gestionar el versionado automático y el Changelog:
 
-* **¿Usas Astro?**: [Ver ejemplo](./examples/use-deploy-astro.yml)
-* **¿Solo Relase?**: [Ver ejemplo](./examples/use-semantic-release.yml)
+1. Asegúrate de tener el archivo [release-config.yml](./examples/release-config.yml) en la carpeta `.github` de tu proyecto.
+2. Crea tu workflow de release llamando a `semantic-release.yml`. [Ver ejemplo](./examples/use-semantic-release.yml).
+
+### 3. Despliegue (Astro u otros)
+Si tu proyecto es un sitio estático:
+
+* **¿Usas Astro?**: Utiliza el workflow de despliegue. [Ver ejemplo](./examples/use-deploy-astro.yml)
+* **Otros Frameworks**: Puedes usar el mismo ejemplo de Astro pero modificando el comando de `build`, asegurándote de que el output se genere en `./dist`.
+
+---
+
+## Estándares lyoss
+
+Los siguientes archivos en la raíz de este repositorio definen el estándar de Lyoss. Cualquier cambio aquí se replicará en todos los proyectos que ejecuten los sincronizadores:
+
+* [**labels.json**](./labels.json): Definición de nombres, colores y descripciones de etiquetas.
+* [**rulesets.json**](./rulesets.json): Reglas de protección para `main` (Merge commit) y `dev` (Squash).
+
+---
 
 > [!TIP]
-> Tambien se puede modificar el step `build` del [ejemplo de astro](./examples/use-deploy-astro.yml) para adaptarlo a cualquier framework o generador de sitios estaticos. (pero asegurate de que el output vaya a la carpeta `./dist`)
+> **Permisos**: Asegúrate de que tus workflows tengan los permisos necesarios (`issues: write`, `repository-projects: write`, `contents: write`) para que la sincronización funcione correctamente.
