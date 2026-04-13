@@ -1,0 +1,44 @@
+name: Reusable Label Sync
+
+on:
+  workflow_call:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Workflows Repo
+        uses: actions/checkout@v4
+        with:
+          repository: lyoss-usm/workflows
+          path: shared-assets
+
+      - name: Sync Labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const labels = JSON.parse(fs.readFileSync('shared-assets/labels.json', 'utf8'));
+
+            for (const label of labels) {
+              const labelData = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label.name,
+                color: label.color,
+                description: label.description
+              };
+
+              try {
+                await github.rest.issues.getLabel({
+                  owner: labelData.owner,
+                  repo: labelData.repo,
+                  name: label.name
+                });
+                await github.rest.issues.updateLabel(labelData);
+                console.log(`✅ Actualizada: ${label.name}`);
+              } catch (e) {
+                await github.rest.issues.createLabel(labelData);
+                console.log(`✨ Creada: ${label.name}`);
+              }
+            }

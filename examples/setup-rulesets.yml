@@ -1,0 +1,11 @@
+name: Initialize Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    uses: lyoss-usm/workflows/.github/workflows/sync-rulesets.yml@main
+    permissions:
+      contents: write
+      repository-projects: write
