@@ -1,11 +1,11 @@
 [
-    { "name": "Bug", "color": "d73a4a", "description": "Reportes de errores o fallos en el codigo que afectan el funcionamiento esperado" },
-    { "name": "Documentacion", "color": "0075ca", "description": "Cambios en la documentacion sin cambios en la funcionalidad" },
-    { "name": "Fix", "color": "cfd3d7", "description": "Solucion a un Bug/Error" },
-    { "name": "Funcionalidad", "color": "a2eeef", "description": "Historia de Usuario que representa un requisito funcional" },
+    { "name": "Bug", "color": "b762cc", "description": "Reportes de errores o fallos en el codigo que afectan el funcionamiento esperado" },
+    { "name": "Documentacion", "color": "0052cc", "description": "Cambios en la documentacion sin cambios en la funcionalidad" },
+    { "name": "Fix", "color": "f9cf59", "description": "Solucion a un Bug/Error" },
+    { "name": "Funcionalidad", "color": "64f2cb", "description": "Historia de Usuario que representa un requisito funcional" },
     { "name": "good first issue", "color": "7057ff", "description": "Good for newcomers" },
     { "name": "help wanted", "color": "008672", "description": "Extra attention is needed" },
-    { "name": "Release", "color": "ffffff", "description": "Cambios que van a produccion" },
-    { "name": "Tarea Tecnica", "color": "d876e3", "description": "Se tiene que realizar para continuar con el desarrollo" },
-    { "name": "Test", "color": "32a852", "description": "Pruebas de funcionamiento" }
+    { "name": "Release", "color": "a0e5b1", "description": "Cambios que van a produccion" },
+    { "name": "Tarea Tecnica", "color": "db128c", "description": "Se tiene que realizar para continuar con el desarrollo" },
+    { "name": "Test", "color": "6bfa64", "description": "Pruebas de funcionamiento" }
 ]
