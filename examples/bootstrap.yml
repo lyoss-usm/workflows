@@ -9,7 +9,9 @@ jobs:
     permissions:
       issues: write
   sync-rulesets:
+    needs: sync-labels
     uses: lyoss-usm/workflows/.github/workflows/sync-rulesets.yml@main
+    secrets: inherit
     permissions:
       contents: write
       repository-projects: write

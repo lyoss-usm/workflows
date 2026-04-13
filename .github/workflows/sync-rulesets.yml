@@ -2,9 +2,13 @@ name: Reusable Rulesets Sync
 
 on:
   workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
 
 jobs:
-  bootstrap:
+  rulesets:
+    name: Sync Rulesets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Central Config
@@ -13,43 +17,39 @@ jobs:
           repository: lyoss-usm/workflows
           path: shared-assets
 
-      - name: Sync Rulesets
+      - name: Process Rulesets
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const fs = require('fs');
-            const path = require('path');
+            const rulesets = JSON.parse(fs.readFileSync('shared-assets/rulesets.json', 'utf8'));
 
-            const rulesPath = 'shared-assets/rulesets.json';
-            if (fs.existsSync(rulesPath)) {
-              const rulesets = JSON.parse(fs.readFileSync(rulesPath, 'utf8'));
+            const { data: existingRulesets } = await github.rest.repos.getRepoRulesets({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
 
-              const { data: existingRulesets } = await github.rest.repos.getRepoRulesets({
+            for (const rs of rulesets) {
+              const existing = existingRulesets.find(item => item.name === rs.name);
+              const payload = {
                 owner: context.repo.owner,
-                repo: context.repo.repo
-              });
+                repo: context.repo.repo,
+                ...rs
+              };
 
-              for (const rs of rulesets) {
-                const existing = existingRulesets.find(item => item.name === rs.name);
-                const payload = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ...rs
-                };
-
-                try {
-                  if (existing) {
-                    await github.rest.repos.updateRepoRuleset({
-                      ...payload,
-                      ruleset_id: existing.id
-                    });
-                    console.log(`✅ Ruleset actualizado: ${rs.name}`);
-                  } else {
-                    await github.rest.repos.createRepoRuleset(payload);
-                    console.log(`✨ Ruleset creado: ${rs.name}`);
-                  }
-                } catch (error) {
-                  console.error(`❌ Error en ruleset ${rs.name}: ${error.message}`);
+              try {
+                if (existing) {
+                  await github.rest.repos.updateRepoRuleset({
+                    ...payload,
+                    ruleset_id: existing.id
+                  });
+                  console.log(`✅ Ruleset actualizado: ${rs.name}`);
+                } else {
+                  await github.rest.repos.createRepoRuleset(payload);
+                  console.log(`✨ Ruleset creado: ${rs.name}`);
                 }
+              } catch (error) {
+                console.error(`❌ Error en ${rs.name}: ${error.message}`);
               }
             }
