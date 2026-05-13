@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         # Nota: Esta acción busca automáticamente el artifact llamado "github-pages"
         # Se debe haber subido en un job anterior
 
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository # trae el historial de git y el repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
     
       - name: Audit URL with Lighthouse
         uses: treosh/lighthouse-ci-action@v12
