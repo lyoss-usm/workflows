@@ -30,10 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install and Build
-        uses: withastro/action@v3
+        uses: withastro/action@v6
         with:
             # CONFIGURACION DE BUILD
             # Configura la ruta, version de node y package manager
