@@ -1,16 +1,13 @@
 # USO DE SEMANTIC RELASE
-# Este workflow generara versiones y releases automáticamente al pushear a main.
+# Este workflow genera versiones y releases a demanda.
 # Se recomienda utilizar un archivo .github/release.yml para configurar el CHANGELOG.
-# (Sobre todo si se suben cambios feat/.. -> dev -> main) ver examples/release-config.yml
+# ver examples/release-config.yml
 #
 # Copia este archivo a: .github/workflows/release.yml en tu repositorio.
 
 name: Release Pipeline
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch: # <- Boton manual en GitHub
 
 permissions:

@@ -1,20 +1,11 @@
 # USO DE DEPLOY ASTRO
-# Este workflow compila y despliega un sitio Astro a GitHub Pages automaticamente.
+# Este workflow compila y despliega un sitio Astro a GitHub Pages.
 #
 # Copia este contenido a: .github/workflows/deploy.yml en tu repositorio de Astro.
 
 name: Astro Deploy to GitHub Pages
 
-# TRIGGERS
-# Aqui puedes configurar cuando se realiza el deploy,
-# se recomienda usar "latest" si se esta usando semantic-release
 on:
-  push:
-    tags:
-      - "latest"
-      # - "v*"
-    # branches:
-    #   - main
   workflow_dispatch: # <- Boton manual en GitHub
 
 permissions:
@@ -44,7 +35,7 @@ jobs:
       # UPLOAD ARTIFACT
       # Sube la carpeta 'dist' como artifact para GitHub Pages, asi lo puede usar el siguiente job.
       - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 

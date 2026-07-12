@@ -22,7 +22,7 @@ jobs:
     steps:
         # Esto trae el codigo del repositorio
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Trae todo el historial de commits para poder calcular la version correctamente
 
@@ -31,7 +31,7 @@ jobs:
         # feat: para minor, y lo demas para patch
       - name: Calculate version
         id: version
-        uses: PaulHatch/semantic-version@v5.4.0
+        uses: PaulHatch/semantic-version@v6.0.2
         with:
           tag_prefix: "v"
           major_pattern: "/!:|BREAKING CHANGE:/"
@@ -43,7 +43,7 @@ jobs:
         # Esto crea el release en GitHub si la version ha cambiado
       - name: Create Release
         if: steps.version.outputs.changed == 'true'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: Release v${{ steps.version.outputs.version }}
@@ -57,7 +57,7 @@ jobs:
         # Es util para que otros scripts o acciones puedan referirse siempre a la ultima version
       - name: Update Latest Tag
         if: steps.version.outputs.changed == 'true'
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@v2
         with:
           tag_name: latest
         env:
