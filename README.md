@@ -22,7 +22,7 @@ Para que tu repo tenga las etiquetas de colores y la rama `main` protegida autom
 
 1. Crea el archivo `.github/workflows/bootstrap.yml` en tu proyecto.
 2. Copia el contenido de [examples/bootstrap.yml](./examples/bootstrap.yml).
-3. Haz push a `main`. El workflow se ejecuta automáticamente, configura labels y rulesets, y se elimina solo.
+3. Ejecútalo manualmente desde la pestaña **Actions**.
 
 ### 2. Configuración de Versiones (Semantic Release)
 Para gestionar el versionado automático y el Changelog:
