@@ -32,7 +32,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           rm .github/workflows/bootstrap.yml
           git add .github/workflows/bootstrap.yml
-          git commit -m "chore: remove bootstrap workflow"
+          git commit -m "chore: remove bootstrap workflow [skip ci]"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
