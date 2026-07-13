@@ -33,6 +33,6 @@ jobs:
           rm .github/workflows/bootstrap.yml
           git add .github/workflows/bootstrap.yml
           git commit -m "chore: remove bootstrap workflow [skip ci]"
-          git push
+          git push --force
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
